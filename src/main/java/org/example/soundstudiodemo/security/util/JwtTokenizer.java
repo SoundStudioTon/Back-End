@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 
 @Component
@@ -27,7 +28,7 @@ public class JwtTokenizer {
         this.refreshSecret = refreshSecret.getBytes(StandardCharsets.UTF_8);
     }
 
-    private String createToken(Long id, String email, String name
+    private String createToken(Long id, String email, String name, List<String> roles
                                , Long expire, byte[] secretKey){
 
         Claims claims = Jwts.claims().setSubject(email);
@@ -35,6 +36,7 @@ public class JwtTokenizer {
         //필요한 정보들을 저장한다.
         claims.put("name",name);
         claims.put("userId",id);
+        claims.put ("roles",roles);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -45,12 +47,12 @@ public class JwtTokenizer {
 
     }
 
-    public String createAccessToken(Long id, String email, String name){
-        return createToken(id,email,name,ACCESS_TOKEN_EXPIRE_COUNT,accessSecret);
+    public String createAccessToken(Long id, String email, String name, List<String> roles){
+        return createToken(id,email,name,roles,ACCESS_TOKEN_EXPIRE_COUNT,accessSecret);
     }
 
-    public String createRefreshToken(Long id, String email, String name){
-        return createToken(id,email,name,REFRESH_TOKEN_EXPIRE_COUNT,refreshSecret);
+    public String createRefreshToken(Long id, String email, String name, List<String> roles){
+        return createToken(id,email,name,roles,REFRESH_TOKEN_EXPIRE_COUNT,refreshSecret);
     }
 
     public static Key getSigningKey(byte[] secretKey){
