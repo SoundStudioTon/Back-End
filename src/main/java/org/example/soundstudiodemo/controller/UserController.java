@@ -15,7 +15,6 @@ import org.example.soundstudiodemo.service.RefreshTokenService;
 import org.example.soundstudiodemo.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,8 +30,6 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenizer jwtTokenizer;
     private final RefreshTokenService refreshTokenService;
-
-
 
     @PostMapping("/userreg")
     public String registerUser(@RequestBody User user, BindingResult bindingResult) {

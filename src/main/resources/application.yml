@@ -4,11 +4,13 @@ spring:
   application:
     name: BlogPlatform
 
+
   datasource:
     url: jdbc:mysql://localhost:3305/soundstudio
     username: root
     password: root1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+
 
 
   jpa:

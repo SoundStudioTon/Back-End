@@ -42,12 +42,9 @@ public class ImageController {
     private String sendImageToAiModel(MultipartFile file) throws IOException {
 
         RestTemplate restTemplate = new RestTemplate();
-        log.error("실행 완");
 
         HttpHeaders headers= new HttpHeaders();
-        log.error("실행 완");
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        log.error("실행 완");
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 
@@ -65,7 +62,6 @@ public class ImageController {
 
         String aiServerUrl = "http://172.16.25.111:5000/predict";
         try {
-            log.error("블라블라블라"+ restTemplate.getMessageConverters());
             ResponseEntity<String> response = restTemplate.postForEntity(aiServerUrl, requestEntity, String.class);
 
             ObjectMapper objectMapper = new ObjectMapper();
@@ -77,7 +73,7 @@ public class ImageController {
 
             return transformedResponse;
         } catch (RestClientException e) {
-            e.printStackTrace();  // 예외 로그 출력
+            e.printStackTrace();
             throw new RuntimeException("AI 서버 호출에 실패했습니다.", e);
         }
     }

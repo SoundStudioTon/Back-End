@@ -1,8 +1,6 @@
 package org.example.soundstudiodemo.service;
 
-//import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.example.soundstudiodemo.model.Role;
 import org.example.soundstudiodemo.model.User;
 import org.example.soundstudiodemo.repository.RoleRepository;
@@ -41,6 +39,11 @@ public class UserService {
     @Transactional
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public User findByUserId(Long id){
+        return userRepository.findById(id).orElse(null);
     }
 
     @Transactional(readOnly = true)
