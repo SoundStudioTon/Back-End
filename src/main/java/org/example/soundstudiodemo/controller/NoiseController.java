@@ -42,6 +42,13 @@ public class NoiseController {
         return ResponseEntity.ok(false);
     }
 
+    @PostMapping("/savefirstnoise")
+    public ResponseEntity<String> saveFirstNoise(@RequestParam String AccessToken, @RequestParam int noiseNumber) {
+        Long userIdFromToken=jwtTokenizer.getUserIdFromToken(AccessToken);
+        noiseService.save(userIdFromToken, noiseNumber);
+        return ResponseEntity.ok("successfully saved first noise");
+    }
+
     // 프론트엔드에서 사용자 ID와 noiseNumber를 받아와 Noise 테이블에 저장하고 AI 서버로 데이터 전송
     @PostMapping("/send")
     public ResponseEntity<String> sendNoiseToAI(@RequestParam Long userId, @RequestParam int noiseNumber) {
