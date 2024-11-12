@@ -42,8 +42,10 @@ public class UserController {
     }
 
     @PostMapping("/api/login")
-    public void loginUser(@RequestBody User user, HttpServletResponse response) throws IOException {
+    public String loginUser(@RequestParam String email, @RequestParam String password, HttpServletResponse response) throws IOException {
         log.info("login시작");
+
+        User user=userService.findByEmail(email);
 
         List<String> roles= user.getRoles().stream()
                 .map(Role::getName).collect(Collectors.toList());
@@ -84,7 +86,7 @@ public class UserController {
         log.info("Cokkie에까지 저장 완료 : {} ", loginResponse);
 
 
-        response.sendRedirect("/");
+        return "redirect:/";
     }
 
     @DeleteMapping("/logout")
