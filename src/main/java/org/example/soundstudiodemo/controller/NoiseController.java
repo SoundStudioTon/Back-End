@@ -51,7 +51,9 @@ public class NoiseController {
 
     // 프론트엔드에서 사용자 ID와 noiseNumber를 받아와 Noise 테이블에 저장하고 AI 서버로 데이터 전송
     @PostMapping("/send")
-    public ResponseEntity<String> sendNoiseToAI(@RequestParam Long userId, @RequestParam int noiseNumber) {
+    public ResponseEntity<String> sendNoiseToAI(@RequestParam String AccessToken, @RequestParam int noiseNumber) {
+
+        Long userId=jwtTokenizer.getUserIdFromToken(AccessToken);
 
         noiseService.save(userId, noiseNumber);
         Noise noise= noiseService.findByUserId(userId).get();
