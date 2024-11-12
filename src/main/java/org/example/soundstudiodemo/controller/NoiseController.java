@@ -5,6 +5,7 @@ import org.example.soundstudiodemo.model.Noise;
 import org.example.soundstudiodemo.model.User;
 import org.example.soundstudiodemo.repository.NoiseRepository;
 import org.example.soundstudiodemo.repository.UserRepository;
+import org.example.soundstudiodemo.security.util.JwtTokenizer;
 import org.example.soundstudiodemo.service.AIService;
 import org.example.soundstudiodemo.service.NoiseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,20 @@ public class NoiseController {
     private AIService aiService;  // AI 서버와 통신하는 서비스
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private JwtTokenizer jwtTokenizer;
+
+    @PostMapping("/isnoisethere")
+    public ResponseEntity<Boolean> isNoiseThere(@RequestParam String AccessToken) {
+        log.error("작동시작");
+        Long userIdFromToken=jwtTokenizer.getUserIdFromToken(AccessToken);
+        log.error(userIdFromToken.toString());
+        Optional<User> user=userRepository.findById(userIdFromToken);
+        if(user.get().getNoise()!=null){
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.ok(false);
+    }
 
     // 프론트엔드에서 사용자 ID와 noiseNumber를 받아와 Noise 테이블에 저장하고 AI 서버로 데이터 전송
     @PostMapping("/send")

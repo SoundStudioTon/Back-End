@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/api/login")
-    public String loginUser(@RequestParam String email, @RequestParam String password, HttpServletResponse response) throws IOException {
+    public ResponseEntity<UserLoginResponseDto> loginUser(@RequestParam String email, @RequestParam String password, HttpServletResponse response) throws IOException {
         log.info("login시작");
 
         User user=userService.findByEmail(email);
@@ -86,7 +86,9 @@ public class UserController {
         log.info("Cokkie에까지 저장 완료 : {} ", loginResponse);
 
 
-        return "redirect:/";
+        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+
+//        return "redirect:/";
     }
 
     @DeleteMapping("/logout")
@@ -119,6 +121,8 @@ public class UserController {
                 .build();
         return new ResponseEntity(loginResponse, HttpStatus.OK);
     }
+
+
 
 
 
