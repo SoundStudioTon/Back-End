@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.soundstudiodemo.model.User;
+import org.example.soundstudiodemo.service.ConcentrationService;
+import org.example.soundstudiodemo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
@@ -20,6 +24,11 @@ import java.io.IOException;
 @Slf4j
 public class ImageController {
 
+    @Autowired
+    private ConcentrationService concentrationService;
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/previewImage")
     public ResponseEntity<byte[]> previewImage(@RequestParam("file") MultipartFile file) throws IOException {
         byte[] imageBytes = file.getBytes();
@@ -29,9 +38,20 @@ public class ImageController {
     }
 
     @PostMapping("/uploadImage")
-    public ResponseEntity<String> handleImageUpload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> handleImageUpload(@RequestParam("file") MultipartFile file, @RequestParam("userId") Long userId) {
         try{
             String aiResponse = sendImageToAiModel(file);
+
+            // AI 모델의 예측 값 추출
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode responseJson = objectMapper.readTree(aiResponse);
+            String prediction = responseJson.get("transformedPrediction").asText();
+
+            // 사용자 엔티티 로드 (UserService를 통해 로드한다고 가정)
+            User user = userService.findByUserId(userId); // UserService에서 구현 필요
+
+            // Concentration 저장
+            concentrationService.saveConcentration(prediction, user);
 
             return ResponseEntity.ok(aiResponse);
         }catch (Exception e){
@@ -60,7 +80,7 @@ public class ImageController {
 
         log.error("파일명: " + file.getOriginalFilename() + ", 크기: " + file.getSize());
 
-        String aiServerUrl = "http://172.16.25.111:5000/predict";
+        String aiServerUrl = "http://soundstudio-ai.kro.kr:5000/predict";
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(aiServerUrl, requestEntity, String.class);
 

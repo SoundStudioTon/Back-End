@@ -11,6 +11,7 @@ import lombok.Setter;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -39,5 +40,8 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Noise noise;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Concentration> concentrations;
 
 }

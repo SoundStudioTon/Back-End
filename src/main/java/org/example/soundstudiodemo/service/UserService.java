@@ -1,6 +1,9 @@
 package org.example.soundstudiodemo.service;
 
 import lombok.AllArgsConstructor;
+import org.example.soundstudiodemo.dto.ConcentrationDto;
+import org.example.soundstudiodemo.dto.UserDto;
+import org.example.soundstudiodemo.model.Concentration;
 import org.example.soundstudiodemo.model.Role;
 import org.example.soundstudiodemo.model.User;
 import org.example.soundstudiodemo.repository.RoleRepository;
@@ -11,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -51,8 +56,32 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public void findConcentrationByUserId(Long userId) {
+        List<Concentration> concentrations = userRepository.getConcentrationById(userId);
+    }
 
+    public UserDto toUserDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setEmail(user.getEmail());
+        userDto.setName(user.getName());
 
+        // Concentration 엔티티를 ConcentrationDto로 변환
+        List<ConcentrationDto> concentrationDtos = user.getConcentrations().stream()
+                .map(this::toConcentrationDto)
+                .collect(Collectors.toList());
+        userDto.setConcentrations(concentrationDtos);
+
+        return userDto;
+    }
+
+    public ConcentrationDto toConcentrationDto(Concentration concentration) {
+        ConcentrationDto dto = new ConcentrationDto();
+        dto.setId(concentration.getId());
+        dto.setDate(concentration.getDate());
+        dto.setValue(concentration.getValue()); // 필요하면 추가적인 필드 매핑
+        return dto;
+    }
 
 
 }

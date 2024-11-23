@@ -15,7 +15,7 @@ import java.util.Map;
 public class AIService {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    private final String aiServerUrl = "http://172.16.25.111:5000/transform";
+    private final String aiServerUrl = "http://soundstudio-ai.kro.kr:5000/transform";
 
     public ResponseEntity<Noise> sendNoiseToAI(Noise noise) {
         Map<String, Object> request = new HashMap<>();
@@ -42,4 +42,5 @@ public class AIService {
 //         AI 서버에 POST 요청 보내고 Noise 객체로 응답 받기
         return restTemplate.postForEntity(aiServerUrl, entity, Noise.class);
     }
+
 }
