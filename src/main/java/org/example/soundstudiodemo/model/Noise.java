@@ -21,13 +21,19 @@ public class Noise {
     private int noiseNumber;
 
     @Column(nullable = false, columnDefinition = "FLOAT DEFAULT 0")
-    private float frequency = 0.0f;
+    private float frequency_1 = 0.0f;
+
+    @Column(nullable = false, columnDefinition = "FLOAT DEFAULT 0")
+    private float frequency_2 = 0.0f;
+
+    @Column(nullable = false, columnDefinition = "FLOAT DEFAULT 0")
+    private float frequency_3 = 0.0f;
+
+    @Column(nullable = false, columnDefinition = "FLOAT DEFAULT 0")
+    private float frequency_4 = 0.0f;
 
     @Column(nullable = false, columnDefinition = "FLOAT DEFAULT 0")
     private float volume = 0.0f;
-
-    @Column(nullable = false, columnDefinition = "FLOAT DEFAULT 0")
-    private float pitch = 0.0f;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private int reward = 0;
@@ -36,12 +42,12 @@ public class Noise {
     private int prevMethodIdx = 0;
 
     @Column(name = "methods_value_list", columnDefinition = "JSON")
-    private String methodsValue = "[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]";
+    private String methodsValue = "[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]";
 
     @Lob
     private byte[] transformedNoise;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")  // 외래 키 연결
+    @JoinColumn(name = "user_id")
     private User user;
 }

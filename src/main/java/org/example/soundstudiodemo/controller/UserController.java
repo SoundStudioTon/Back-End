@@ -31,6 +31,7 @@ public class UserController {
     private final JwtTokenizer jwtTokenizer;
     private final RefreshTokenService refreshTokenService;
 
+
     @PostMapping("/userreg")
     public String registerUser(@RequestBody User user, BindingResult bindingResult) {
         if(bindingResult.hasErrors()){
@@ -66,6 +67,7 @@ public class UserController {
         UserLoginResponseDto loginResponse = UserLoginResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .userId(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .build();
@@ -88,7 +90,6 @@ public class UserController {
 
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
 
-//        return "redirect:/";
     }
 
     @DeleteMapping("/logout")

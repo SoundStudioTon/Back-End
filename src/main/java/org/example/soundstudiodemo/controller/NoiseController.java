@@ -8,6 +8,7 @@ import org.example.soundstudiodemo.repository.UserRepository;
 import org.example.soundstudiodemo.security.util.JwtTokenizer;
 import org.example.soundstudiodemo.service.AIService;
 import org.example.soundstudiodemo.service.NoiseService;
+import org.example.soundstudiodemo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,10 @@ public class NoiseController {
     private NoiseService noiseService;
 
     @Autowired
-    private AIService aiService;  // AI 서버와 통신하는 서비스
+    private UserService userService;
+
+    @Autowired
+    private AIService aiService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -49,36 +53,50 @@ public class NoiseController {
         return ResponseEntity.ok("successfully saved first noise");
     }
 
-    // 프론트엔드에서 사용자 ID와 noiseNumber를 받아와 Noise 테이블에 저장하고 AI 서버로 데이터 전송
+    @PostMapping("/getnoisenumber")
+    public ResponseEntity<Integer> getNoiseNumber(@RequestParam String AccessToken) {
+        Long userIdFromToken=jwtTokenizer.getUserIdFromToken(AccessToken);
+        int noiseNumber=userService.getUserNoiseNumber(userIdFromToken);
+        return ResponseEntity.ok(noiseNumber);
+
+    }
+
     @PostMapping("/send")
-    public ResponseEntity<String> sendNoiseToAI(@RequestParam String AccessToken, @RequestParam int noiseNumber) {
+    public ResponseEntity<String> sendNoiseToAI(@RequestParam String AccessToken) {
 
         Long userId=jwtTokenizer.getUserIdFromToken(AccessToken);
 
-        noiseService.save(userId, noiseNumber);
+
         Noise noise= noiseService.findByUserId(userId).get();
 
-        // AI 서버에 전송할 Noise 데이터에서 transformedNoise를 제외한 JSON 생성
         ResponseEntity<Noise> aiResponse = aiService.sendNoiseToAI(noise);
 
-        // AI 서버에서 응답으로 변형된 소리 데이터를 받음
         if (aiResponse.getStatusCode().is2xxSuccessful() && aiResponse.getBody() != null) {
             Noise updatedNoise = aiResponse.getBody();
 
-            // 변형된 소리 정보로 Noise 엔티티 업데이트
-            noise.setFrequency(updatedNoise.getFrequency());
+            noise.setFrequency_1(updatedNoise.getFrequency_1());
+            noise.setFrequency_2(updatedNoise.getFrequency_2());
+            noise.setFrequency_3(updatedNoise.getFrequency_3());
+            noise.setFrequency_4(updatedNoise.getFrequency_4());
             noise.setVolume(updatedNoise.getVolume());
-            noise.setPitch(updatedNoise.getPitch());
             noise.setReward(updatedNoise.getReward());
             noise.setPrevMethodIdx(updatedNoise.getPrevMethodIdx());
             noise.setMethodsValue(updatedNoise.getMethodsValue());
             noise.setTransformedNoise(updatedNoise.getTransformedNoise());
 
-            // 업데이트된 정보 저장
             noiseRepository.save(noise);
             return ResponseEntity.ok("Noise updated successfully.");
         } else {
             return ResponseEntity.status(500).body("Error communicating with AI server.");
         }
     }
+
+    @PostMapping("/noiseRewardUpdate")
+    public ResponseEntity<String> noiseRewardUpdate(@RequestParam String AccessToken, @RequestParam int reward) {
+        Long userIdFromToken=jwtTokenizer.getUserIdFromToken(AccessToken);
+
+        noiseService.updateNoiseReward(userIdFromToken, reward);
+        return ResponseEntity.ok("successfully noise reward");
+    }
+
 }

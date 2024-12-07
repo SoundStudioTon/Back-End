@@ -3,10 +3,16 @@ spring:
     encoding: UTF-8
   application:
     name: BlogPlatform
-
+  servlet:
+    multipart:
+      max-request-size: 200MB
+      max-file-size: 200MB
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSZ
+    time-zone: Asia/Seoul
 
   datasource:
-    url: jdbc:mysql://34.64.45.79:3306/soundstudio
+    url: jdbc:mysql://34.64.196.80:3306/soundstudio?serverTimezone=Asia/Seoul
     username: root
     password: root1234
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -33,7 +33,7 @@ public class ImageController {
     public ResponseEntity<byte[]> previewImage(@RequestParam("file") MultipartFile file) throws IOException {
         byte[] imageBytes = file.getBytes();
         return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG) // 이미지 형식에 맞게 설정
+                .contentType(MediaType.IMAGE_JPEG)
                 .body(imageBytes);
     }
 
@@ -42,15 +42,13 @@ public class ImageController {
         try{
             String aiResponse = sendImageToAiModel(file);
 
-            // AI 모델의 예측 값 추출
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode responseJson = objectMapper.readTree(aiResponse);
             String prediction = responseJson.get("transformedPrediction").asText();
 
-            // 사용자 엔티티 로드 (UserService를 통해 로드한다고 가정)
-            User user = userService.findByUserId(userId); // UserService에서 구현 필요
 
-            // Concentration 저장
+            User user = userService.findByUserId(userId);
+
             concentrationService.saveConcentration(prediction, user);
 
             return ResponseEntity.ok(aiResponse);

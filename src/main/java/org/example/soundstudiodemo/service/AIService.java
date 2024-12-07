@@ -21,9 +21,11 @@ public class AIService {
         Map<String, Object> request = new HashMap<>();
         request.put("userId", noise.getId());
         request.put("noise_number", noise.getNoiseNumber());
-        request.put("frequency", noise.getFrequency());
+        request.put("freq_1", noise.getFrequency_1());
+        request.put("freq_2", noise.getFrequency_2());
+        request.put("freq_3", noise.getFrequency_3());
+        request.put("freq_4", noise.getFrequency_4());
         request.put("volume", noise.getVolume());
-        request.put("pitch", noise.getPitch());
         request.put("reward", noise.getReward());
         request.put("prev_method_idx", noise.getPrevMethodIdx());
         request.put("methods_value_list", noise.getMethodsValue());
@@ -39,7 +41,7 @@ public class AIService {
         log.error(entity.toString());
 
 
-//         AI 서버에 POST 요청 보내고 Noise 객체로 응답 받기
+
         return restTemplate.postForEntity(aiServerUrl, entity, Noise.class);
     }
 

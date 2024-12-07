@@ -20,19 +20,16 @@ public class NoiseService {
     private final UserService userService;
 
     public void save(Long userId, int noiseNumber){
-        // User 객체 찾기
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // Noise 객체 생성
         Noise noise = new Noise();
         noise.setNoiseNumber(noiseNumber);
 
-        // User와 Noise 연결
-        noise.setUser(user); // Noise 객체에 User 설정
-        user.setNoise(noise); // User 객체에 Noise 설정
+        noise.setUser(user);
+        user.setNoise(noise);
 
-        // 저장
         noiseRepository.save(noise);
         userRepository.save(user);
         log.error("완료!!");
@@ -41,6 +38,17 @@ public class NoiseService {
     public Optional<Noise> findByUserId(Long userId){
         Noise byUserNoiseId = noiseRepository.findByUserNoise_Id(userId);
         return Optional.ofNullable(byUserNoiseId);
+    }
+
+    public void updateNoiseReward(Long userId,int reward){
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Noise noise=noiseRepository.findByUserNoise_Id(userId);
+        noise.setReward(reward);
+        noiseRepository.save(noise);
+
     }
 
 }

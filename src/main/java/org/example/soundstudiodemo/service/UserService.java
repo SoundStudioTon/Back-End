@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.example.soundstudiodemo.dto.ConcentrationDto;
 import org.example.soundstudiodemo.dto.UserDto;
 import org.example.soundstudiodemo.model.Concentration;
+import org.example.soundstudiodemo.model.Noise;
 import org.example.soundstudiodemo.model.Role;
 import org.example.soundstudiodemo.model.User;
 import org.example.soundstudiodemo.repository.RoleRepository;
@@ -54,6 +55,13 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> getUser(Long id){
         return userRepository.findById(id);
+    }
+
+    public int getUserNoiseNumber(Long userId){
+        User user=userRepository.findById(userId).orElse(null);
+        Noise noise= user.getNoise();
+        int noiseNumber=noise.getNoiseNumber();
+        return noiseNumber;
     }
 
     public void findConcentrationByUserId(Long userId) {

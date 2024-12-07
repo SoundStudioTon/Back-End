@@ -16,15 +16,11 @@ public class ConcentrationService {
 
     private final ConcentrationRepository concentrationRepository;
 
-    public void saveConcentration(Concentration concentration) {
-        concentrationRepository.save(concentration);
-    }
-
     public Concentration saveConcentration(String value, User user) {
         Concentration concentration = new Concentration();
         concentration.setDate(LocalDateTime.now());
         concentration.setValue(value);
-        concentration.setUser(user); // 연결된 사용자 설정
+        concentration.setUser(user);
         return concentrationRepository.save(concentration);
     }
 

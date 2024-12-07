@@ -11,13 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 public class ConcentrationController {
 
     @Autowired
@@ -36,14 +36,14 @@ public class ConcentrationController {
         }
 
 
-        UserDto userDto = userService.toUserDto(user); // DTO 변환
+        UserDto userDto = userService.toUserDto(user);
         List<ConcentrationDto> filteredConcentrations = userDto.getConcentrations().stream()
                 .filter(concentration -> (concentration.getDate().isEqual(startTime) || concentration.getDate().isAfter(startTime)) &&
                         (concentration.getDate().isEqual(endTime) || concentration.getDate().isBefore(endTime)))
                 .collect(Collectors.toList());
 
         if (filteredConcentrations.isEmpty()) {
-            return ResponseEntity.noContent().build(); // 데이터가 없으면 204 응답
+            return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok(filteredConcentrations);
